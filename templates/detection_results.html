@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}Detection Results - Missing Person Detection System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2>
+            <i class="fas fa-search me-2"></i>
+            Detection Results
+        </h2>
+        <p class="lead">
+            Potential matches found in processed video
+        </p>
+    </div>
+    <div class="col-md-4 text-end">
+        <div class="btn-group">
+            <a href="{{ url_for('process_video') }}" class="btn btn-primary">
+                <i class="fas fa-video me-2"></i>
+                Process Another Video
+            </a>
+            <a href="{{ url_for('clear_detection_results') }}" class="btn btn-danger">
+                <i class="fas fa-trash-alt me-2"></i>
+                Clear Results
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        {% if matches %}
+            <div class="alert alert-success mb-4">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>{{ matches|length }} potential match{{ 'es' if matches|length > 1 else '' }} found!</strong>
+                Review the results below and take appropriate action.
+            </div>
+            <div class="row">
+                {% for match in matches %}
+                <div class="col-md-6 mb-4">
+                    <div class="card border-info h-100">
+                        <div class="card-header bg-info text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">{{ match.person.name }}</h5>
+                                <span class="badge bg-light text-dark">
+                                    Confidence: {{ (match.confidence * 100)|round(1) }}%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p class="mb-1"><strong>Age:</strong> {{ match.person.age }}</p>
+                                    <p class="mb-1"><strong>Gender:</strong> {{ match.person.gender|capitalize or 'Not specified' }}</p>
+                                    <p class="mb-1"><strong>Found at:</strong> {{ match.frame_time|round(2) }} seconds into video</p>
+                                    <p class="mb-1"><strong>Status:</strong>
+                                        {% if match.person.status == 'found' %}
+                                            <span class="badge bg-success">Found</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Missing</span>
+                                        {% endif %}
+                                    </p>
+                                    <p class="mb-1"><strong>Location:</strong> {{ match.location }}</p>
+
+                                    <hr>
+
+                                    <h6>Person Description:</h6>
+                                    <p>{{ match.person.description or 'No description available.' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#detailsModal{{ loop.index }}">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    More Details
+                                </button>
+                                <button type="button" class="btn btn-sm btn-success">
+                                    <i class="fas fa-phone me-1"></i>
+                                    Report Match
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details Modal -->
+                <div class="modal fade" id="detailsModal{{ loop.index }}" tabindex="-1" aria-labelledby="detailsModalLabel{{ loop.index }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info text-white">
+                                <h5 class="modal-title" id="detailsModalLabel{{ loop.index }}">Match Details: {{ match.person.name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h5>Match Information</h5>
+                                        <ul class="list-group mb-3">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Match Confidence
+                                                <span class="badge bg-primary rounded-pill">{{ (match.confidence * 100)|round(1) }}%</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Video Timestamp
+                                                <span>{{ match.frame_time|round(2) }} seconds</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Location
+                                                <span>{{ match.location }}</span>
+                                            </li>
+                                        </ul>
+
+                                        <h5>Person Details</h5>
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <td>{{ match.person.name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Age</th>
+                                                    <td>{{ match.person.age }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Gender</th>
+                                                    <td>{{ match.person.gender|capitalize or 'Not specified' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last Seen</th>
+                                                    <td>{{ match.person.last_seen or 'Unknown' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Status</th>
+                                                    <td>
+                                                        {% if match.person.status == 'found' %}
+                                                            <span class="badge bg-success">Found</span>
+                                                        {% else %}
+                                                            <span class="badge bg-danger">Missing</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Description</th>
+                                                    <td>{{ match.person.description or 'No description available.' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-success">
+                                    <i class="fas fa-phone me-1"></i>
+                                    Report Match
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="alert alert-warning mt-3">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Important:</strong> These results are based on automated facial recognition and may require further verification.
+                Please follow proper procedures when acting on these matches.
+            </div>
+
+        {% else %}
+            <div class="alert alert-info">
+                <h4 class="alert-heading">No Matches Found</h4>
+                <p>No potential matches were identified in the processed video.</p>
+                <hr>
+                <p class="mb-0">
+                    <a href="{{ url_for('process_video') }}" class="btn btn-primary">
+                        <i class="fas fa-video me-2"></i>
+                        Process Another Video
+                    </a>
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

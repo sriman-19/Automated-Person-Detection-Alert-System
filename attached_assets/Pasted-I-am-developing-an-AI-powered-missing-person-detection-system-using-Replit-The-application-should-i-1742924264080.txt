@@ -1,0 +1,47 @@
+I am developing an AI-powered missing person detection system using Replit. The application should integrate facial recognition to scan existing CCTV footage (both live and recorded) and match against a database of missing persons and criminals. The system should be built using the following tech stack:
+
+## **Frontend:**
+- **Framework:** React.js (or Next.js) for a modern and responsive UI.
+- **UI Library:** Tailwind CSS / Material UI.
+- **API Requests:** Axios or Fetch API to communicate with the backend.
+
+## **Backend:**
+- **Server:** FastAPI (Python) or Node.js (Express.js) for handling requests.
+- **Database:**
+  - PostgreSQL/MySQL for structured data (user logs, reports).
+  - MongoDB/Firebase for storing image embeddings and facial data.
+- **Authentication:** JWT-based authentication for police login.
+- **Task Scheduler:** Celery/Redis to process long-running background tasks.
+
+## **AI & Video Processing:**
+- **Face Recognition:** MediaPipe Face Detection / DeepFace / OpenCV DNN.
+- **Video Processing:** OpenCV + FFmpeg for analyzing live and recorded footage.
+- **Similarity Matching:** AI should extract embeddings from uploaded images and compare them with faces detected in the video.
+
+## **Real-time Alerts & Notifications:**
+- **Google Maps API:** To show the detected location.
+- **Twilio/Firebase Cloud Messaging:** For real-time notifications (SMS, Email, WhatsApp).
+- **Socket.io:** For live updates on the UI.
+
+## **Features:**
+1. **User Interface:** A simple UI where police officers can upload an image of the missing person/criminal and specify a date range.
+2. **Data Storage:** Store the uploaded images in a database and extract face embeddings for fast searching.
+3. **Video Processing:**
+   - Analyze recorded CCTV footage and live streams.
+   - Extract frames every 1-5 seconds for efficient scanning.
+   - Compare detected faces against stored embeddings.
+4. **Alert System:**
+   - If a match is found, notify the user with a screenshot, detected location, and confidence score.
+   - Continuous tracking if the person moves across cameras.
+
+## **Deployment & Scalability:**
+- Deploy on Replit with cloud storage for images and logs.
+- Optimize for real-time processing with GPU support.
+
+Generate the **full application** with:
+- A **React-based frontend** with an upload form and real-time dashboard.
+- A **Python FastAPI backend** to process images, analyze videos, and store data.
+- A **Face Recognition module** that scans and alerts upon detection.
+- **Database integration** with PostgreSQL/MongoDB for efficient searching.
+
+Provide a **structured codebase** with clear comments, file separation, and necessary dependencies.

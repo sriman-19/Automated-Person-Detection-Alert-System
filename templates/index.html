@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Missing Person Detection System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3 text-center">
+        <div class="hero-section mb-5">
+            <h1 class="display-4 mb-4">
+                <i class="fas fa-search text-info me-3"></i>
+                Missing Person Detection
+            </h1>
+            <p class="lead">
+                An AI-powered system to help locate missing persons through facial recognition technology.
+            </p>
+            <hr class="my-4">
+            <p>
+                This system helps law enforcement agencies scan through CCTV footage to find missing persons,
+                providing quick alerts when potential matches are found.
+            </p>
+
+            {% if not session.get('user_id') %}
+            <div class="mt-4">
+                <a href="{{ url_for('login') }}" class="btn btn-primary me-2">
+                    <i class="fas fa-sign-in-alt me-2"></i>
+                    Login
+                </a>
+                <a href="{{ url_for('register') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-user-plus me-2"></i>
+                    Register
+                </a>
+            </div>
+            {% else %}
+            <div class="mt-4">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                    <i class="fas fa-tachometer-alt me-2"></i>
+                    Go to Dashboard
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <i class="fas fa-database text-info fa-3x mb-3"></i>
+                <h3 class="card-title">Database Storage</h3>
+                <p class="card-text">
+                    Securely store missing person information and facial data for quick matching.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <i class="fas fa-video text-info fa-3x mb-3"></i>
+                <h3 class="card-title">Video Processing</h3>
+                <p class="card-text">
+                    Analyze recorded CCTV footage to scan for missing persons.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <i class="fas fa-bell text-info fa-3x mb-3"></i>
+                <h3 class="card-title">Alert System</h3>
+                <p class="card-text">
+                    Receive instant notifications when potential matches are found.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">How It Works</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <ol class="list-group list-group-numbered mb-0">
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Upload Missing Person</div>
+                                    Add details and a clear face photo of the missing person.
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Process Video Footage</div>
+                                    Upload CCTV footage or connect to a live feed.
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">AI Analysis</div>
+                                    Our system scans footage and compares faces against missing person database.
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Receive Alerts</div>
+                                    Get notified immediately when potential matches are found.
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

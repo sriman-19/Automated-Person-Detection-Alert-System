@@ -1,0 +1,16 @@
+[
+  {
+    "id": "37ead16b-6701-4739-a12f-b5a4cf812abc",
+    "username": "varshini_galipalli",
+    "password_hash": "scrypt:32768:8:1$XdqL9LTxhcZwLbZa$f83e88be095b49d4451f122e515dbf38092fd8df6404bd779306743c9c5b2d70cf218d5ef5f233003769e3da1a7d3622277b7aef0d244f555e00a948f074c8c9",
+    "badge_number": "2203A51284",
+    "role": "officer"
+  },
+  {
+    "id": "c29843ac-a881-44f5-a57c-2623c5e0e9fe",
+    "username": "2203A4046",
+    "password_hash": "scrypt:32768:8:1$gDhuv0bwvLOQ4b1t$ff6b3cf2abc58bb159f9f2d8421a2d6da391958808631db4610b41cc97b80b336ef6914ca854f156148adddd58dfcc391468a8482c0845eca812120fe6c2ae4c",
+    "badge_number": "2203a54046",
+    "role": "officer"
+  }
+]

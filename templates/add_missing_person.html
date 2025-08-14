@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Missing Person - Missing Person Detection System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2>
+            <i class="fas fa-user-plus me-2"></i>
+            Add Missing Person
+        </h2>
+        <p class="lead">Enter details and upload a clear photo of the missing person.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Missing Person Information</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('add_missing_person_route') }}" enctype="multipart/form-data">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="age" class="form-label">Age <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="age" name="age" min="1" max="120" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select class="form-select" id="gender" name="gender">
+                                <option value="" selected>Select gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="last_seen" class="form-label">Last Seen Date</label>
+                        <input type="date" class="form-control" id="last_seen" name="last_seen">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Physical appearance, clothing worn when last seen, etc."></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="photo" class="form-label">Upload Photo <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="photo" name="photo" accept="image/png, image/jpeg, image/jpg" required>
+                            <label class="input-group-text" for="photo">
+                                <i class="fas fa-upload"></i>
+                            </label>
+                        </div>
+                        <div class="form-text">
+                            Please upload a clear, frontal face image for best recognition results.
+                            Supported formats: JPG, JPEG, PNG.
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Photo Guidelines:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Use a recent, high-quality photo</li>
+                            <li>Ensure the face is clearly visible and well-lit</li>
+                            <li>Front-facing photos work best</li>
+                            <li>Avoid photos with sunglasses or hats that obscure the face</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times me-2"></i>
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                            Save Person
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Face Recognition Tips
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>Our AI-powered system extracts facial features from the uploaded photo. For optimal recognition:</p>
+
+                <div class="mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Do:</strong>
+                    </div>
+                    <ul class="ps-4">
+                        <li>Use high-quality images</li>
+                        <li>Ensure good lighting</li>
+                        <li>Choose photos with a clear view of the face</li>
+                        <li>Upload recent photos if possible</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        <strong>Don't:</strong>
+                    </div>
+                    <ul class="ps-4">
+                        <li>Use blurry or pixelated images</li>
+                        <li>Upload images with faces at extreme angles</li>
+                        <li>Use heavily filtered or edited photos</li>
+                        <li>Choose photos with multiple people</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-lock me-2"></i>
+                    Data Privacy
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>All uploaded photos and personal information are handled with strict confidentiality. Data is:</p>
+                <ul>
+                    <li>Stored securely</li>
+                    <li>Accessible only to authorized personnel</li>
+                    <li>Used solely for the purpose of locating missing persons</li>
+                    <li>Handled in accordance with data protection regulations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Preview uploaded image before submission
+    document.getElementById('photo').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Validate file type
+            const fileType = file.type;
+            if (fileType !== 'image/jpeg' && fileType !== 'image/jpg' && fileType !== 'image/png') {
+                alert('Please select a valid image file (JPG, JPEG, PNG)');
+                event.target.value = '';
+                return;
+            }
+
+            // Validate file size (max 5MB)
+            const maxSizeMB = 5;
+            const maxSizeBytes = maxSizeMB * 1024 * 1024;
+            if (file.size > maxSizeBytes) {
+                alert(`Image size exceeds the ${maxSizeMB}MB limit`);
+                event.target.value = '';
+                return;
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}Process Video - Missing Person Detection System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2>
+            <i class="fas fa-video me-2"></i>
+            Process Video
+        </h2>
+        <p class="lead">
+            Upload CCTV footage to scan for missing persons.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Video Upload</h4>
+            </div>
+            <div class="card-body">
+                <form id="videoForm">
+                    <div class="mb-4">
+                        <label for="video" class="form-label">Upload Video File <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="video" name="video" accept="video/mp4, video/avi, video/mov" required>
+                            <label class="input-group-text" for="video">
+                                <i class="fas fa-upload"></i>
+                            </label>
+                        </div>
+                        <div class="form-text">
+                            Upload CCTV footage or video recordings to scan for missing persons.
+                            Supported formats: MP4, AVI, MOV.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Processing Options</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" value="true" id="highAccuracy" name="highAccuracy">
+                            <label class="form-check-label" for="highAccuracy">
+                                High Accuracy Mode (slower processing)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="true" id="saveThumbnails" name="saveThumbnails" checked>
+                            <label class="form-check-label" for="saveThumbnails">
+                                Save thumbnails of detected faces
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="confidence" class="form-label">Confidence Threshold: <span id="confidenceValue">70%</span></label>
+                        <input type="range" class="form-range" min="50" max="95" step="5" value="70" id="confidence" name="confidence">
+                        <div class="d-flex justify-content-between">
+                            <small>Lower (more matches)</small>
+                            <small>Higher (fewer matches)</small>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Processing Time:</strong>
+                        Video analysis may take several minutes depending on the file size and selected options.
+                        You will be notified when processing is complete.
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" id="processButton">
+                            <i class="fas fa-play-circle me-2"></i>
+                            Process Video
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Processing Spinner (Hidden by default) -->
+                <div id="processingSpinner" class="text-center mt-4 d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Processing...</span>
+                    </div>
+                    <p class="mt-2">Processing video... This may take a few minutes.</p>
+                    <div class="progress mt-2">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Processing Guidelines
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3">For best results:</h6>
+
+                <ul class="list-group mb-3">
+                    <li class="list-group-item">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Use clear, well-lit footage
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Keep video duration under 30 minutes
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Use higher resolution when available
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Choose footage where faces are visible
+                    </li>
+                </ul>
+
+                <h6 class="card-subtitle mb-3">System Capabilities:</h6>
+                <p>Our AI can detect and match faces even in challenging conditions:</p>
+                <ul>
+                    <li>Partial face visibility</li>
+                    <li>Various lighting conditions</li>
+                    <li>Multiple people in frame</li>
+                    <li>Different angles (front best, side partial)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Important Notes
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>Please be aware of the following limitations:</p>
+                <ul>
+                    <li>Face recognition is probabilistic and may generate false positives</li>
+                    <li>Processing large video files may take longer</li>
+                    <li>Very low-quality footage may yield poor results</li>
+                    <li>All matches should be manually verified</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/tus-js-client@3.1.0/dist/tus.min.js"></script>
+<script>
+    document.getElementById('videoForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Disable submit button and show spinner
+        document.getElementById('processButton').disabled = true;
+        document.getElementById('processingSpinner').classList.remove('d-none');
+
+        const fileInput = document.getElementById('video');
+        const file = fileInput.files[0];
+
+        if (!file) return;
+
+        const upload = new tus.Upload(file, {
+            endpoint: 'http://localhost:1080/files/', // Backend URL for tus server
+            chunkSize: 5242880, // 5MB per chunk
+            retryDelays: [0, 1000, 3000, 5000],
+            metadata: {
+                filename: file.name,
+                filetype: file.type
+            },
+            onError: function (error) {
+                console.error("Upload failed:", error);
+            },
+            onProgress: function (bytesUploaded, bytesTotal) {
+                const percentage = (bytesUploaded / bytesTotal * 100).toFixed(2);
+                document.getElementById('progressBar').style.width = percentage + '%';
+            },
+            onSuccess: function () {
+                alert("Upload complete!");
+                document.getElementById('processButton').disabled = false;
+                document.getElementById('processingSpinner').classList.add('d-none');
+            }
+        });
+
+        upload.start();
+    });
+</script>
+{% endblock %}
